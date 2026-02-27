@@ -2,4 +2,7 @@
 
 ## Architecture
 
-- [Domain Data Model And Workflows](./domain-data-model.md)
+- [Domain Data Model](./data-model.md)
+- [State Machines](./state-machines.md)
+- [Application Workflows](./workflows.md)
+- [Legacy Entry Point](./domain-data-model.md)
