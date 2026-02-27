@@ -43,7 +43,7 @@ erDiagram
       datetime assigned_at
     }
 
-    POLICY_DOCUMENT {
+    POLICY {
       uuid policy_id PK
       uuid tenant_id FK
       string title
@@ -82,6 +82,15 @@ erDiagram
       uuid created_by FK
       datetime created_at
       boolean is_published
+    }
+
+    POLICY_PROCESS_LINK {
+      uuid policy_process_link_id PK
+      uuid tenant_id FK
+      uuid policy_id FK
+      uuid process_id FK
+      string link_type
+      datetime created_at
     }
 
     CHANGE_REQUEST {
@@ -129,13 +138,16 @@ erDiagram
     USER ||--o{ USER_ROLE : has
     ROLE ||--o{ USER_ROLE : grants
 
-    TENANT ||--o{ POLICY_DOCUMENT : owns
-    POLICY_DOCUMENT ||--o{ POLICY_VERSION : has
+    TENANT ||--o{ POLICY : owns
+    POLICY ||--o{ POLICY_VERSION : has
     USER ||--o{ POLICY_VERSION : creates
 
     TENANT ||--o{ PROCESS : owns
     PROCESS ||--o{ PROCESS_VERSION : has
     USER ||--o{ PROCESS_VERSION : creates
+
+    POLICY ||--o{ POLICY_PROCESS_LINK : links
+    PROCESS ||--o{ POLICY_PROCESS_LINK : links
 
     TENANT ||--o{ CHANGE_REQUEST : owns
     USER ||--o{ CHANGE_REQUEST : requests
@@ -149,9 +161,10 @@ erDiagram
 
 ## Core relationships
 
-- `tenant` owns policy documents, processes, change requests, workflow steps, and audit logs.
+- `tenant` owns policies, processes, change requests, workflow steps, and audit logs.
 - `user` gets tenant-specific roles through `user_role`.
-- `policy_document` and `process` are versioned through their version tables.
+- `policy` and `process` are versioned through their version tables.
+- `policy` and `process` have a many-to-many relationship via `policy_process_link`.
 - `change_request` drives updates and is approved through `approval` records.
 - `audit_log` captures key user and system actions.
 
